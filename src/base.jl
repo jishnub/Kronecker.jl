@@ -421,3 +421,9 @@ function Base.:*(K::AbstractKroneckerProduct, a::Number)
     A, B = getmatrices(K)
     kronecker(A, B * a)
 end
+
+# Sum and differences of the kronecker product of dense matrices get promoted to Matrix
+# We eagerly convert the components to use the + and - methods for matrices that are usually more performant
+Base.:+(K1::KroneckerProduct{<:Any,<:DenseMatrix,<:DenseMatrix}, K2::KroneckerProduct{<:Any,<:DenseMatrix,<:DenseMatrix}) = (A = collect(K1); A .+= collect(K2); A)
+Base.:-(K1::KroneckerProduct{<:Any,<:DenseMatrix,<:DenseMatrix}, K2::KroneckerProduct{<:Any,<:DenseMatrix,<:DenseMatrix}) = (A = collect(K1); A .-= collect(K2); A)
+Base.:-(K::KroneckerProduct{<:Any,<:DenseMatrix,<:DenseMatrix}) = (A = collect(K); @. A = -A; A)

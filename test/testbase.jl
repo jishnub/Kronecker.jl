@@ -147,6 +147,12 @@
         @test X + K ≈ X + Matrix(K)
     end
 
+    @testset "Add and subtract KroneckerProduct of dense" begin
+        @test K + K == 2K
+        @test K - K == 0K
+        @test -K + K == 0K
+    end
+
     @testset "Scalar multiplication" begin
         @test 3.0K ≈ 3.0X
         @test K * 2 ≈ 2X
