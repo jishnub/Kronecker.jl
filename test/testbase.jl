@@ -111,6 +111,17 @@
 
         @test svdvals(K) ≈ svdvals(Kc) ≈ svdvals(X)
         @test rank(K) == rank(Kc) == rank(X)
+
+        # multiplication of kronecker product of Diagonal
+        Kd = Diagonal(A) ⊗ Diagonal(B)
+        DKd = Diagonal(Kd)
+        Kd2 = Diagonal(B) ⊗ Diagonal(A)
+        DKd2 = Diagonal(Kd2)
+        @test K * Kd ≈ X * DKd
+        @test Kd * K ≈ DKd * X
+        @test Kd * Kd ≈ DKd * DKd
+        @test Kd * Kd2 ≈ DKd * DKd2
+        @test Kd2 * Kd ≈ DKd2 * DKd
     end
 
     @testset "Mismatch errors" begin
