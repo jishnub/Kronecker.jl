@@ -471,12 +471,6 @@ function Base.:-(K::AbstractKroneckerProduct)
 end
 
 const KronProdDiagonal = KroneckerProduct{<:Any,<:Diagonal,<:Diagonal}
-for T in [:Diagonal, :UniformScaling]
-    @eval Base.:+(K::KronProdDiagonal, D::$T) = Diagonal(K) + D
-    @eval Base.:+(D::$T, K::KronProdDiagonal) = D + Diagonal(K)
-    @eval Base.:-(K::KronProdDiagonal, D::$T) = Diagonal(K) - D
-    @eval Base.:-(D::$T, K::KronProdDiagonal) = D - Diagonal(K)
-end
 
 function Base.:-(A::AbstractKroneckerProduct, B::AbstractKroneckerProduct)
     # special methods to handle kronecker products with singleton matrices

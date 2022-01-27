@@ -151,18 +151,24 @@ function Base.:*(K1::KroneckerPower, K2::KroneckerPower)
     K1.pow == K2.pow || throw(ArgumentError("multiplication is only defined if all terms have the same exponent"))
     _mulmixed(K1, K2)
 end
+
 const KronPowDiagonal = KroneckerPower{<:Any,<:Diagonal}
+const KroneckerDiagonal = Union{KronProdDiagonal,KronPowDiagonal}
+
 function Base.:*(K1::KronPowDiagonal, K2::KronPowDiagonal)
     K1.pow == K2.pow || throw(ArgumentError("multiplication is only defined if all terms have the same exponent"))
     _mulmixed(K1, K2)
 end
 
 for T in [:Diagonal, :UniformScaling]
-    @eval Base.:+(K::KronPowDiagonal, D::$T) = Diagonal(K) + D
-    @eval Base.:+(D::$T, K::KronPowDiagonal) = D + Diagonal(K)
-    @eval Base.:-(K::KronPowDiagonal, D::$T) = Diagonal(K) - D
-    @eval Base.:-(D::$T, K::KronPowDiagonal) = D - Diagonal(K)
+    @eval Base.:+(K::KroneckerDiagonal, D::$T) = Diagonal(K) + D
+    @eval Base.:+(D::$T, K::KroneckerDiagonal) = D + Diagonal(K)
+    @eval Base.:-(K::KroneckerDiagonal, D::$T) = Diagonal(K) - D
+    @eval Base.:-(D::$T, K::KroneckerDiagonal) = D - Diagonal(K)
 end
+
+Base.:+(K1::KroneckerDiagonal, K2::KroneckerDiagonal) = Diagonal(K1) + Diagonal(K2)
+Base.:-(K1::KroneckerDiagonal, K2::KroneckerDiagonal) = Diagonal(K1) - Diagonal(K2)
 
 """
     lmul!(a::Number, K::KroneckerPower)
